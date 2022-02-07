@@ -19,7 +19,7 @@
         <div class="col-lg-6 mx-auto">
           <p class="fs-5 mb-4">Use the button below to add to your library and watch your collection grow.</p>
           <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">
+            <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" onclick="openModal()">
               <i class="bi bi-clipboard-plus"></i>
               &nbsp;New Book
             </button>
@@ -35,13 +35,14 @@
           <div class="col">
             <div class="card text-center border-info">
               <div class="card-header">
-                <i class="bi bi-check-lg"></i>
+                <i class="bi bi-check-lg text-info"></i>
                 Read
               </div>
               <div class="card-body">
                 <h3 class="card-title">The Hobbit</h3>
                 <p class="card-text">J. R. R. Tolkien</p>
-                <a href="#" class="btn btn-dark">Mark Unread</a>
+                <a href="#" class="btn btn-dark card-link">Mark Unread</a>
+                <a href="#" class="btn btn-danger card-link">Delete Book</a>
               </div>
               <div class="card-footer text-muted">
                 340 pages
@@ -52,7 +53,7 @@
           <div class="col">
             <div class="card text-center border-danger">
               <div class="card-header">
-                <i class="bi bi-x-lg"></i>
+                <i class="bi bi-x-lg text-danger"></i>
                 Unread
               </div>
               <div class="card-body">
@@ -81,6 +82,44 @@
       <p class="mb-1">&copy;  <a href="https://github.com/gregolive" target="_blank" class="link-secondary">gregolive</a></p>
     </div>
   </footer>
-  
+
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <form>
+        <div class="row mb-3">
+          <label for="title" class="col-sm-2 col-form-label">Title</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="author" class="col-sm-2 col-form-label">Author</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="author">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="pages" class="col-sm-2 col-form-label"># Pages</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="pages">
+          </div>
+        </div>
+        
+        <div class="row mb-3 form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Read?</label>
+        </div>
+        
+        <div class="form-group row">
+          <div class="col-sm-10">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-info">Add Book</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
