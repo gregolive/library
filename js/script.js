@@ -7,9 +7,19 @@ displayBooks(allBooks());
 console.log(allBooks());
 
 function displayBooks(books) {
-  for (const book of books) {
-    buildBookCard(book);
+  if (books.length === 0) {
+    console.log("building");
+    buildExample();
+  } else {
+    for (const book of books) {
+      buildBookCard(book);
+    }
   }
+}
+
+function buildExample() {
+  exampleBook = new Book(1, "Example Book", "If you are seeing this your library is empty!", "42", "on");
+  buildBookCard(exampleBook);
 }
 
 function allBooks() {
@@ -29,7 +39,7 @@ function buildBookCard(book) {
 
   const col = document.createElement("div");
   col.className = "col";
-  col.id = book.id;
+  col.id = String(book.id);
 
   const card = document.createElement("div");
   if (book.read === "on") {
@@ -88,13 +98,20 @@ function buildButtons(book, body) {
   } else {
     readButton.innerText = "Mark Read";
   }
-  body.appendChild(readButton);
 
   const deleteButton = document.createElement("a");
   deleteButton.className = "btn btn-danger card-link";
   deleteButton.innerText = "Delete Book";
-  body.appendChild(deleteButton);
 
+  if (localStorage.length === 0) {
+    readButton.classList.add("disabled");
+    readButton.setAttribute("aria-disabled", "true");
+    deleteButton.classList.add("disabled");
+    deleteButton.setAttribute("disabled", "disabled");
+  }
+
+  body.appendChild(readButton);
+  body.appendChild(deleteButton);
   return body
 }
 
@@ -153,6 +170,9 @@ deleteBtns.forEach(button => {
     let id = e.target.parentNode.parentNode.parentNode.id;
     console.log(id);
     deleteBook(id);
+    if (localStorage.length === 0) {
+      buildExample();
+    }
   })
 });
 
@@ -176,6 +196,7 @@ readBtns.forEach(button => {
     let book = JSON.parse(localStorage.getItem(e.target.parentNode.parentNode.parentNode.id));
     console.log(book);
     updateReadStatus(book);
+    window.location.reload();
   })
 });
 
