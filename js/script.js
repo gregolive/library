@@ -1,7 +1,15 @@
 // DISPLAY BOOKS VIA CARDS
 
-for (const book of allBooks()) {
-  buildBookCard(book);
+//localStorage.clear();
+
+displayBooks(allBooks());
+
+console.log(allBooks());
+
+function displayBooks(books) {
+  for (const book of books) {
+    buildBookCard(book);
+  }
 }
 
 function allBooks() {
@@ -13,8 +21,6 @@ function allBooks() {
       values.push( JSON.parse(localStorage.getItem(keys[i])) );
   }
 
-  console.log(values);
-
   return values;
 }
 
@@ -23,6 +29,7 @@ function buildBookCard(book) {
 
   const col = document.createElement("div");
   col.className = "col";
+  col.id = book.id;
 
   const card = document.createElement("div");
   if (book.read === "on") {
@@ -75,7 +82,6 @@ function buildBody(book) {
 
 function buildButtons(book, body) {
   const readButton = document.createElement("a");
-  readButton.href = "#";
   readButton.className = "btn btn-dark card-link";
   if (book.read === "on") {
     readButton.innerText = "Mark Unread";
@@ -85,7 +91,6 @@ function buildButtons(book, body) {
   body.appendChild(readButton);
 
   const deleteButton = document.createElement("a");
-  deleteButton.href = "#";
   deleteButton.className = "btn btn-danger card-link";
   deleteButton.innerText = "Delete Book";
   body.appendChild(deleteButton);
@@ -103,31 +108,76 @@ function buildFooter(book) {
 
 // ADD BOOK TO LIBRARY
 
-function Book(title, author, pages, read) {
+const bookForm = document.getElementById("book-form");
+
+function Book(id, title, author, pages, read) {
+  this.id = id;
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
 }
 
-const bookForm = document.getElementById("book-form")
+function createBook(book) {
+  localStorage.setItem(book.id, JSON.stringify(book));
+}
 
 bookForm.addEventListener('submit', function() {
   addBookToLibrary();
-  allStorage().forEach(displayBook);
   bookForm.reset();
 })
 
 function addBookToLibrary() {
+  const id = localStorage.length + 1;
   const title = document.getElementById("title").value;
   const author = document.getElementById("author").value;
   const pages = document.getElementById("pages").value;
   const read = document.getElementById("read").value;
 
-  let newBook = new Book(title, author, pages, read);
-  console.log(newBook);
-  localStorage.setItem(String(title), JSON.stringify(newBook));
+  let newBook = new Book(id, title, author, pages, read);
+  createBook(newBook);
+  buildBookCard(newBook);
 }
+
+// DELETE BOOK FROM LIBRARY
+
+const deleteBtns = Array.from(document.querySelectorAll('.btn.btn-danger.card-link'));
+
+function deleteBook(id) {
+  localStorage.removeItem(id);
+  document.getElementById(id).remove();
+}
+
+deleteBtns.forEach(button => {
+  button.addEventListener('click', e => {
+    let id = e.target.parentNode.parentNode.parentNode.id;
+    console.log(id);
+    deleteBook(id);
+  })
+});
+
+// CHANGE BOOK READ STATUS 
+
+const readBtns = Array.from(document.querySelectorAll('.btn.btn-dark.card-link'));
+
+function updateReadStatus(book) {
+  if (book.read === "on") {
+    book.read = "off";
+  } else {
+    book.read = "on";
+  }
+  deleteBook(book.id);
+  createBook(book);
+  buildBookCard(book);
+}
+
+readBtns.forEach(button => {
+  button.addEventListener('click', e => {
+    let book = JSON.parse(localStorage.getItem(e.target.parentNode.parentNode.parentNode.id));
+    console.log(book);
+    updateReadStatus(book);
+  })
+});
 
 // OPEN AND CLOSE MODAL
 
