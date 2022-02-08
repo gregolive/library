@@ -1,46 +1,54 @@
-// ADD BOOK TO LIBRARY
-
-let myLibrary = [1];
-
-function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-}
-
-function addBookToLibrary(title, author, pages, read) {
-  let newBook = new Book(title, author, pages, read)
-  myLibrary.push(newBook)
-}
-
 // DISPLAY BOOKS VIA CARDS
 
-myLibrary.forEach(displayBook)
+for (const book of allBooks()) {
+  buildBookCard(book);
+}
 
-function displayBook() {
+function allBooks() {
+  let values = [],
+      keys = Object.keys(localStorage),
+      i = keys.length;
+
+  while ( i-- ) {
+      values.push( JSON.parse(localStorage.getItem(keys[i])) );
+  }
+
+  console.log(values);
+
+  return values;
+}
+
+function buildBookCard(book) {
   const anchor = document.querySelector("#anchor");
 
   const col = document.createElement("div");
   col.className = "col";
 
   const card = document.createElement("div");
-  card.className = "card text-center border-info";
+  if (book.read === "on") {
+    card.className = "card text-center border-info";
+  } else {
+    card.className = "card text-center border-danger";
+  }
 
-  card.appendChild(buildHeader());
-  card.appendChild(buildBody());
-  card.appendChild(buildFooter());
+  card.appendChild(buildHeader(book));
+  card.appendChild(buildBody(book));
+  card.appendChild(buildFooter(book));
   col.appendChild(card);
   anchor.appendChild(col);
 }
 
-function buildHeader() {
+function buildHeader(book) {
   const cardHeader = document.createElement("div");
   cardHeader.className = "card-header";
 
   const headerIcon = document.createElement("i");
-  headerIcon.className = "bi bi-check-lg text-info";
 
+  if (book.read === "on") {
+    headerIcon.className = "bi bi-check-lg text-info";
+  } else {
+    headerIcon.className = "bi bi-x-lg text-danger";
+  }
   const headerText = document.createElement("span");
   headerText.innerText = " Read";
 
@@ -50,26 +58,30 @@ function buildHeader() {
   return cardHeader;
 }
 
-function buildBody() {
+function buildBody(book) {
   const body = document.createElement("div");
   body.className = "card-body";
 
   const title = document.createElement("h3");
-  title.innerText = "The Hobbit";
+  title.innerText = book.title;
   body.appendChild(title);
 
   const author = document.createElement("p");
-  author.innerText = "J. R. R. Tolkien";
+  author.innerText = book.author;
   body.appendChild(author);
 
-  return buildButtons(body);
+  return buildButtons(book, body);
 }
 
-function buildButtons(body) {
+function buildButtons(book, body) {
   const readButton = document.createElement("a");
   readButton.href = "#";
   readButton.className = "btn btn-dark card-link";
-  readButton.innerText = "Mark Unread";
+  if (book.read === "on") {
+    readButton.innerText = "Mark Unread";
+  } else {
+    readButton.innerText = "Mark Read";
+  }
   body.appendChild(readButton);
 
   const deleteButton = document.createElement("a");
@@ -81,12 +93,40 @@ function buildButtons(body) {
   return body
 }
 
-function buildFooter() {
+function buildFooter(book) {
   const cardFooter = document.createElement("div");
   cardFooter.className = "card-footer text-muted";
-  cardFooter.innerText = "340 pages"
+  cardFooter.innerText = book.pages + " pages";
 
   return cardFooter
+}
+
+// ADD BOOK TO LIBRARY
+
+function Book(title, author, pages, read) {
+  this.title = title;
+  this.author = author;
+  this.pages = pages;
+  this.read = read;
+}
+
+const bookForm = document.getElementById("book-form")
+
+bookForm.addEventListener('submit', function() {
+  addBookToLibrary();
+  allStorage().forEach(displayBook);
+  bookForm.reset();
+})
+
+function addBookToLibrary() {
+  const title = document.getElementById("title").value;
+  const author = document.getElementById("author").value;
+  const pages = document.getElementById("pages").value;
+  const read = document.getElementById("read").value;
+
+  let newBook = new Book(title, author, pages, read);
+  console.log(newBook);
+  localStorage.setItem(String(title), JSON.stringify(newBook));
 }
 
 // OPEN AND CLOSE MODAL
