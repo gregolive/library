@@ -42,7 +42,7 @@ Library.prototype.buildBookCard = function(book) {
   col.id = String(book.title);
 
   const card = document.createElement("div");
-  if (book.read === "on") {
+  if (book.read === "true") {
     card.className = "card text-center border-info";
   } else {
     card.className = "card text-center border-danger";
@@ -61,7 +61,7 @@ Library.prototype.buildCardHeader = function(book) {
   cardHeader.className = "card-header";
 
   const headerIcon = document.createElement("i");
-  headerIcon.className = (book.read === "on") ? "bi bi-check-lg text-info" : "bi bi-x-lg text-danger";
+  headerIcon.className = (book.read === "true") ? "bi bi-check-lg text-info" : "bi bi-x-lg text-danger";
 
   const headerText = document.createElement("span");
   headerText.innerText = " Read";
@@ -94,12 +94,12 @@ Library.prototype.buildCardBody = function(book) {
 Library.prototype.buildReadButton = function(book) {
   const readButton = document.createElement("a");
   readButton.className = "btn btn-dark card-link";
-  readButton.innerText = (book.read === "on") ? "Mark Unread" : "Mark Read";
+  readButton.innerText = (book.read === "true") ? "Mark Unread" : "Mark Read";
 
   readButton.addEventListener('click', () => {
     const bookIndex = this.findBookIndex(book.title);
     const targetBook = this.books.at(bookIndex)
-    targetBook.read = (targetBook.read === "on") ? "off" : "on";
+    targetBook.read = (targetBook.read === "true") ? "false" : "true";
     this.resetBookCards();
     this.updateLocalStorage();
   })
@@ -148,7 +148,7 @@ Library.prototype.addBook = function() {
   const title = document.getElementById("title").value;
   const author = document.getElementById("author").value;
   const pages = document.getElementById("pages").value;
-  const read = document.getElementById("read").value;
+  const read = (document.getElementById("read").checked) ? "true" : "false";
 
   let newBook = new Book(title, author, pages, read);
   this.books.push(newBook);
@@ -197,4 +197,6 @@ bookForm.addEventListener('submit', e => {
   myLibrary.addBook();
   localStorage.clear();
   localStorage.setItem('Library', JSON.stringify(myLibrary.books));
+  console.log(myLibrary.books);
+  e.target.reset();
 })
