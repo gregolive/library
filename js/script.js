@@ -101,6 +101,7 @@ Library.prototype.buildReadButton = function(book) {
     const targetBook = this.books.at(bookIndex)
     targetBook.read = (targetBook.read === "on") ? "off" : "on";
     this.resetBookCards();
+    this.updateLocalStorage();
   })
 
   return readButton;
@@ -113,6 +114,12 @@ Library.prototype.findBookIndex = function(bookTitle) {
   );
 }
 
+// Update local storage on button click
+Library.prototype.updateLocalStorage = function() {
+  localStorage.clear();
+  localStorage.setItem('Library', JSON.stringify(this.books));
+}
+
 // Book card body delete book button
 Library.prototype.buildDeleteButton = function(book) {
   const deleteButton = document.createElement("a");
@@ -121,6 +128,7 @@ Library.prototype.buildDeleteButton = function(book) {
 
   deleteButton.addEventListener('click', e => {
     this.deleteBook(book.title);
+    this.updateLocalStorage();
   })
 
   return deleteButton;
@@ -143,7 +151,7 @@ Library.prototype.addBook = function() {
   const read = document.getElementById("read").value;
 
   let newBook = new Book(title, author, pages, read);
-  this.books.push(newBook)
+  this.books.push(newBook);
   this.buildBookCard(newBook);
 }
 
@@ -154,7 +162,7 @@ Library.prototype.deleteBook = function(title) {
 }
 
 Library.prototype.removeFromLibrary = function(bookTitle) {
-  this.books.splice(this.books.findIndex(function(i){
+  this.books.splice(this.books.findIndex(function(i) {
     return i.title === bookTitle;
   }), 1);
 }
