@@ -7,6 +7,10 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
+Book.prototype.updateReadStatus = function() {
+  this.read = (this.read === "on") ? "off" : "on";
+}
+
 // LIBRARY CONSTRUCTOR
 
 function Library() {
@@ -14,7 +18,7 @@ function Library() {
   const anchor = document.querySelector("#anchor");
 }
 
-// Check if library exists in LocalStorage
+// Check if library exists in LocalStorage and display
 Library.prototype.checkLocalStorage = function() {
   if (localStorage.length > 0) {
     this.books = JSON.parse(localStorage.getItem('Library'));
@@ -97,12 +101,10 @@ Library.prototype.buildReadButton = function(book) {
   readButton.className = "btn btn-dark card-link";
   readButton.innerText = (book.read === "on") ? "Mark Unread" : "Mark Read";
 
-  if (this.books.length === 0) { readButton.classList.add("disabled") };
-
   readButton.addEventListener('click', () => {
-    console.log(this.books.at(-1).read);
-    this.books.at(-1).read = (this.books.at(-1).read === "on") ? "off" : "on";
-    console.log(this.books);
+    const bookIndex = this.findBookIndex(book.title);
+    const targetBook = this.books.at(bookIndex)
+    targetBook.read = (targetBook.read === "on") ? "off" : "on";
     this.resetBookCards();
   })
 
@@ -113,8 +115,6 @@ Library.prototype.buildDeleteButton = function(book) {
   const deleteButton = document.createElement("a");
   deleteButton.className = "btn btn-danger card-link";
   deleteButton.innerText = "Delete Book";
-
-  if (this.books.length === 0) { deleteButton.classList.add("disabled") };
 
   deleteButton.addEventListener('click', e => {
     this.deleteBook(book.title);
@@ -168,13 +168,11 @@ Library.prototype.removeFromLibrary = function(bookTitle) {
 }
 
 // Find book
-/*
-Library.prototype.findBook = function(bookTitle) {
-  var selectedBook = this.filter(book => {
-    return book.title === bookTitle
-  });
+Library.prototype.findBookIndex = function(bookTitle) {
+  return this.books.findIndex(
+    (book) => book.title === bookTitle
+  )
 }
-*/
 
 // BOOK FORM MODAL
 
