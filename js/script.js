@@ -7,11 +7,6 @@ function Book(title, author, pages, read) {
   this.read = read;
 }
 
-// Change book read status
-Book.updateReadStatus = function() {
-  this.read = (this.read === "on") ? "off" : "on";
-}
-
 // LIBRARY CONSTRUCTOR
 
 function Library() {
@@ -19,11 +14,25 @@ function Library() {
   const anchor = document.querySelector("#anchor");
 }
 
-Library.prototype.resetBookCards = function() {
-  anchor.textContent = '';
+// Check if library exists in LocalStorage
+Library.prototype.checkLocalStorage = function() {
+  if (localStorage.length > 0) {
+    this.books = JSON.parse(localStorage.getItem('Library'));
+    this.displayAllBooks();
+  }
+}
+
+// Display all book cards
+Library.prototype.displayAllBooks = function() {
   for (const book of this.books) {
     this.buildBookCard(book);
   }
+}
+
+// Reset all book cards
+Library.prototype.resetBookCards = function() {
+  anchor.textContent = '';
+  this.displayAllBooks();
 }
 
 // Build HTML book card
@@ -167,17 +176,36 @@ Library.prototype.findBook = function(bookTitle) {
 }
 */
 
-// APP SETUP
+// BOOK FORM MODAL
+
+let modal = document.querySelector("#bookModal");
+
+function openModal() {
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// INITILIZE APP
 
 const myLibrary = new Library();
-//myLibrary.displayBooks();
-
+myLibrary.checkLocalStorage();
+  
 // Add new books via modal submit button
 const bookForm = document.getElementById("book-form");
 
 bookForm.addEventListener('submit', e => {
   myLibrary.addBook();
-  e.preventDefault();
+  localStorage.clear();
+  localStorage.setItem('Library', JSON.stringify(myLibrary.books));
 })
 
 
@@ -418,21 +446,3 @@ readBtns.forEach(button => {
 });
 
 */
-
-// BOOK FORM MODAL
-
-let modal = document.querySelector("#bookModal");
-
-function openModal() {
-  modal.style.display = "flex";
-}
-
-function closeModal() {
-  modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
