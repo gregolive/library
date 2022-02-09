@@ -18,4 +18,4 @@ This was my first project back in Javascript after spending some time learning R
 
 The main problem I ran into with this project was trying to figure out how to persist the library on a page reload. The solution I chose was to use localStorage to save the Library using <code>JSON.stringify()</code>, since localStorage requires that the key value pairs be strings. LocalStorage allowed the library to be "personal" to the user.
 
-After instantiating the Library object on a page load the <code>checkLocalStorage</code> function checks if there is anything saved in localStorage. If so, <code>JSON.parse</code> is used to re-create the array of Book objects and set this array to the Library's <code>books</code> constant. Otherwise the <code>books</code> constant is left empty.
+After instantiating the Library object on a page load the <code>checkLocalStorage</code> function checks if there is anything saved in localStorage. If so, <code>JSON.parse()</code> is used to re-create the array of Book objects and set this array to the Library's <code>books</code> constant. Otherwise the <code>books</code> constant is left empty.
