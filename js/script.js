@@ -195,7 +195,6 @@ myLibrary.checkLocalStorage();
 const title = document.getElementById("title");
 const author = document.getElementById("author");
 const pages = document.getElementById("pages");
-const read = (document.getElementById("read")) ? "true" : "false";
 
 // VALIDATE INPUTS
 
@@ -204,7 +203,7 @@ const textError = (input) => {
   if (input.validity.valueMissing) {
     input.nextElementSibling.textContent = `Book ${input.id} cannot be blank.`;
   }
-}
+};
 
 const pageError = () => {
   if (pages.validity.valueMissing) {
@@ -214,7 +213,7 @@ const pageError = () => {
   } else if (pages.validity.rangeUnderflow) {
     pages.nextElementSibling.textContent = `Book should have at least 1 page.`;
   }
-}
+};
 
 // Input validation
 title.addEventListener('input', () => {
@@ -222,6 +221,14 @@ title.addEventListener('input', () => {
     title.nextElementSibling.textContent = '';
   } else {
     textError(title);
+  }
+});
+
+author.addEventListener('input', () => {
+  if (author.validity.valid) {
+    author.nextElementSibling.textContent = '';
+  } else {
+    textError(author);
   }
 });
 
@@ -241,6 +248,9 @@ const bookForm = document.getElementById("book-form");
 bookForm.addEventListener('submit', e => {
   if (!title.validity.valid) {
     textError(title);
+    e.preventDefault();
+  } else if (!author.validity.valid) {
+    textError(author);
     e.preventDefault();
   } else if (!pages.validity.valid) {
     pageError();
