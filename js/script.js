@@ -206,12 +206,30 @@ const textError = (input) => {
   }
 }
 
-// Title validation
-title.addEventListener('input', function (event) {
+const pageError = () => {
+  if (pages.validity.valueMissing) {
+    pages.nextElementSibling.textContent = 'Number of pages cannot be blank.';
+  } else if (pages.validity.typeMismatch) {
+    pages.nextElementSibling.textContent = 'Entered value needs to be a number.';
+  } else if (pages.validity.rangeUnderflow) {
+    pages.nextElementSibling.textContent = `Book should have at least 1 page.`;
+  }
+}
+
+// Input validation
+title.addEventListener('input', () => {
   if (title.validity.valid) {
     title.nextElementSibling.textContent = '';
   } else {
     textError(title);
+  }
+});
+
+pages.addEventListener('input', () => {
+  if (pages.validity.valid) {
+    pages.nextElementSibling.textContent = '';
+  } else {
+    pageError();
   }
 });
 
@@ -221,8 +239,11 @@ title.addEventListener('input', function (event) {
 const bookForm = document.getElementById("book-form");
 
 bookForm.addEventListener('submit', e => {
-  if(!title.validity.valid) {
+  if (!title.validity.valid) {
     textError(title);
+    e.preventDefault();
+  } else if (!pages.validity.valid) {
+    pageError();
     e.preventDefault();
   } else {
     addBookToLibrary();
