@@ -191,14 +191,48 @@ window.onclick = function(event) {
 
 const myLibrary = new Library();
 myLibrary.checkLocalStorage();
-  
-// Add new books via modal submit button
+
+const title = document.getElementById("title");
+const author = document.getElementById("author");
+const pages = document.getElementById("pages");
+const read = (document.getElementById("read")) ? "true" : "false";
+
+// VALIDATE INPUTS
+
+// Error messages
+const textError = (input) => {
+  if (input.validity.valueMissing) {
+    input.nextElementSibling.textContent = `Book ${input.id} cannot be blank.`;
+  }
+}
+
+// Title validation
+title.addEventListener('input', function (event) {
+  if (title.validity.valid) {
+    title.nextElementSibling.textContent = '';
+  } else {
+    textError(title);
+  }
+});
+
+// FORM SUBMISSION
+
+// Add new books via modal submit button if form is valid
 const bookForm = document.getElementById("book-form");
 
 bookForm.addEventListener('submit', e => {
+  if(!title.validity.valid) {
+    textError(title);
+    e.preventDefault();
+  } else {
+    addBookToLibrary();
+    e.target.reset();
+    closeModal();
+  }
+});
+
+const addBookToLibrary = () => {
   myLibrary.addBook();
   localStorage.clear();
   localStorage.setItem('Library', JSON.stringify(myLibrary.books));
-  console.log(myLibrary.books);
-  e.target.reset();
-})
+};

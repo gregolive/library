@@ -56,3 +56,8 @@ footer a:hover {
 .form-check {
   margin-bottom: 1rem!important;
 }
+
+.error {
+  font-size: 0.85rem;
+  color: var(--bs-red);
+}
