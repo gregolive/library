@@ -11,6 +11,7 @@ Keep track of the books you've read and the books you want to read with your own
 - Library object inherhits functions via prototyping
 - Local storage saves the user's library so it can be rebuilt on a page refresh
 - Event listeners allow the user to dynamically add a book, change a books "read status", or  delete a book from the library
+- Form validation via Javascript's Constraint validation API
 
 ## Reflection
 
